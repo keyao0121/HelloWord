@@ -1,6 +1,7 @@
 #!/bin/sh
 # Builds the rdocx wasm from ../rdocx (branch dopame) and copies it into the app:
 # the JS glue and the .wasm into src/wasm/ (Vite bundles both).
+# Only needed after the engine changes: the built files are kept in the repository.
 set -eu
 
 here="$(cd "$(dirname "$0")" && pwd)"
