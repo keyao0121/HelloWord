@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/@dopame/acde-api/config.schema.json",
+  // A desktop: one full-screen web page behind all windows. System features come from acde:* modules, both the app and
+  // the shell modules. For editor types write /// <reference types="@dopame/acde-api/shell" />.
+  "type": "desktop",
+  "id": "desk",
+  "label": "desk",
+  "entry": "index.html",
+  // services: desktop services that run in acde: name → module file, like "clock": "services/clock.ts". A service
+  // name is not the name of a system module. A service works with its context (ctx.log, ctx.spawn, ctx.state,
+  // ctx.inspect) and cannot import acde:* modules; ctx.import('acde:<name>') gives it the shell modules its entry
+  // lists: "clock": { "module": "services/clock.ts", "modules": ["windows"] }.
+  "services": {},
+  // apps: the window apps this desktop brings along (system apps). Each declares capabilities, optional, services,
+  // requests and schemes like a "type": "app" project, and may also declare shell modules (like "windows": true).
+  "apps": []
+}

@@ -1,0 +1,14 @@
+{
+  "name": "desk",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "acde dev",
+    "build": "acde build",
+    "check": "acde check"
+  },
+  "devDependencies": {
+    "@dopame/acde-api": "https://calbin-1318886512.cos.ap-beijing.myqcloud.com/pkgs/acdert/0.0.9/acde-api-0.0.9.tar.gz"
+  },
+  "packageManager": "bun@1.4.4"
+}

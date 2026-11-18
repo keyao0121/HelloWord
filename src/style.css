@@ -1,0 +1,653 @@
+:root {
+  --chrome: #f6f5f2;
+  --chrome-line: #dcd9d2;
+  --workspace: #e7e5df;
+  --ink: #1c1b19;
+  --muted: #6a665f;
+  --control-hover: #e6e3dc;
+  --focus: #2f6fde;
+  --page-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), 0 6px 18px rgba(0, 0, 0, 0.08);
+  color-scheme: light dark;
+  font: 13px/1.4 system-ui, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chrome: #232221;
+    --chrome-line: #3a3836;
+    --workspace: #171716;
+    --ink: #ecebe7;
+    --muted: #a19d95;
+    --control-hover: #343230;
+    --focus: #7aa7ff;
+    --page-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 6px 18px rgba(0, 0, 0, 0.4);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--workspace);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* The open documents, one tab each, above the toolbar. The active tab takes the colour of
+   the toolbar under it, so the two read as one surface. Like the toolbar, the bar is stacked
+   over the document area. */
+.tabs {
+  position: relative;
+  z-index: 6;
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 34px;
+  padding: 0 10px;
+  background: var(--workspace);
+  border-bottom: 1px solid var(--chrome-line);
+}
+
+.tab-list {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 0;
+  height: 100%;
+}
+
+.tab {
+  flex: 0 1 auto;
+  width: 180px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+  height: 28px;
+  padding: 0 4px 0 12px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 7px 7px 0 0;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.tab:hover {
+  background: var(--control-hover);
+}
+
+.tab[aria-selected='true'] {
+  /* One pixel down, over the bar's own line, so the tab opens onto the toolbar. */
+  height: 29px;
+  margin-bottom: -1px;
+  background: var(--chrome);
+  border-color: var(--chrome-line);
+  color: var(--ink);
+}
+
+.tab-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab-close,
+#new-tab {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+
+#new-tab {
+  margin: 0 0 3px 2px;
+  font-size: 16px;
+}
+
+.tab-close:hover,
+#new-tab:hover {
+  background: var(--chrome-line);
+}
+
+.tab-close:focus-visible,
+#new-tab:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+/* The toolbar and the find bar are stacked over the document area. In acdert the part of a
+   page that has scrolled out above the document area still takes the pointer there, so
+   without this the buttons stop answering as soon as the document is scrolled. */
+.toolbar {
+  position: relative;
+  z-index: 6;
+  flex: none;
+  padding: 4px 10px;
+  background: var(--chrome);
+  border-bottom: 1px solid var(--chrome-line);
+}
+
+.toolbar-row,
+.find-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+}
+
+.toolbar button,
+.find-bar button {
+  min-width: 30px;
+  height: 28px;
+  padding: 0 7px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.toolbar button:hover:not(:disabled),
+.find-bar button:hover {
+  background: var(--control-hover);
+}
+
+/* A press shows at once, whatever the button then does. */
+.toolbar button:active:not(:disabled),
+.find-bar button:active {
+  background: var(--chrome-line);
+}
+
+.toolbar button:disabled {
+  color: var(--muted);
+  opacity: 0.55;
+  cursor: default;
+}
+
+.toolbar button:focus-visible,
+.find-bar button:focus-visible,
+.find-bar input:focus-visible,
+.workspace:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.toolbar button[aria-pressed='true'] {
+  background: var(--control-hover);
+  border-color: var(--chrome-line);
+}
+
+.toolbar button.mark {
+  padding: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+}
+
+.toolbar select {
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid var(--chrome-line);
+  border-radius: 5px;
+  background: var(--chrome);
+  color: inherit;
+  font: inherit;
+}
+
+.toolbar select:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.toolbar output,
+.find-bar output {
+  min-width: 46px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.toolbar .divider,
+.find-bar .divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 3px;
+  background: var(--chrome-line);
+}
+
+.toolbar .spacer,
+.find-bar .spacer {
+  flex: 1;
+}
+
+/* Where the document area of the active tab sits. */
+.workspaces {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.workspace {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  overflow: auto;
+}
+
+/* A page keeps its size whether or not its canvas exists, so scrolling never jumps. */
+.page {
+  position: relative;
+  flex: none;
+  cursor: text;
+  background: #ffffff;
+  box-shadow: var(--page-shadow);
+}
+
+.page canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.status {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 12px;
+  background: var(--chrome);
+  border-top: 1px solid var(--chrome-line);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.status span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The caret sits on the page at a document position. Pages are always white, so it is always dark. */
+.caret {
+  position: absolute;
+  width: 0;
+  pointer-events: none;
+}
+
+.caret-bar {
+  position: absolute;
+  left: -0.75px;
+  top: 0;
+  width: 1.5px;
+  height: 100%;
+  background: #111111;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .caret.blink .caret-bar {
+    animation: caret-blink 1.1s steps(1) infinite;
+  }
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* The input takes the keyboard without showing; it sits at the caret so that an input
+   method opens its candidate window there. */
+.caret textarea {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  resize: none;
+  overflow: hidden;
+  /* Transparent, not opacity 0: what reads the element tree skips elements with no opacity,
+     and this is the text box an agent types into. */
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  font: inherit;
+  white-space: nowrap;
+}
+
+/* While an input method composes, its text shows in place at the caret. */
+.caret.composing textarea {
+  width: 14em;
+  height: auto;
+  min-height: 100%;
+  background: #ffffff;
+  color: #111111;
+  caret-color: auto;
+  box-shadow: 0 0 0 1px var(--focus);
+  z-index: 1;
+}
+
+.caret.composing .caret-bar,
+.caret.parked .caret-bar {
+  display: none;
+}
+
+.caret.picking .caret-bar {
+  display: none;
+}
+
+/* The selected picture: a frame with a handle on each corner. Only the handles take the
+   pointer; a press on the picture itself goes to the page under the frame. */
+.picture-frame {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1.5px solid var(--focus);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.picture-frame i {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  box-sizing: border-box;
+  border: 1.5px solid var(--focus);
+  background: #ffffff;
+  pointer-events: auto;
+}
+
+.picture-frame i[data-corner='nw'] {
+  left: -6px;
+  top: -6px;
+  cursor: nwse-resize;
+}
+
+.picture-frame i[data-corner='ne'] {
+  right: -6px;
+  top: -6px;
+  cursor: nesw-resize;
+}
+
+.picture-frame i[data-corner='sw'] {
+  left: -6px;
+  bottom: -6px;
+  cursor: nesw-resize;
+}
+
+.picture-frame i[data-corner='se'] {
+  right: -6px;
+  bottom: -6px;
+  cursor: nwse-resize;
+}
+
+/* Where a dragged picture would land. */
+.drop-line {
+  position: absolute;
+  height: 2px;
+  background: var(--focus);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Selected text: a tint over the page, under the caret. */
+.selection {
+  position: absolute;
+  background: rgba(47, 111, 222, 0.28);
+  pointer-events: none;
+}
+
+/* A question the page asks in place of confirm(), which acdert does not have. */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.32);
+  z-index: 10;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-box {
+  width: min(380px, calc(100vw - 48px));
+  padding: 20px;
+  border: 1px solid var(--chrome-line);
+  border-radius: 10px;
+  background: var(--chrome);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+}
+
+.modal-box p {
+  margin: 0 0 18px;
+  font-size: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.modal-actions button {
+  height: 30px;
+  padding: 0 14px;
+  border: 1px solid var(--chrome-line);
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.modal-actions button:hover {
+  background: var(--control-hover);
+}
+
+.modal-actions button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.modal-actions button.primary {
+  border-color: var(--focus);
+  background: var(--focus);
+  color: var(--chrome);
+}
+
+/* The page's text as elements, lying over where the canvas draws it. It is there to be read
+   by what cannot read pixels, so it shows nothing. Its elements do take the pointer: an agent
+   clicks a paragraph by its ref, which acdert refuses when another element covers it, and the
+   page handles the click the same whether it lands on the canvas or on one of these. */
+.page-text {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.page-text > * {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: auto;
+  color: transparent;
+  font: 400 8px/1 sans-serif;
+  white-space: nowrap;
+}
+
+.modal-fields {
+  display: flex;
+  gap: 16px;
+  margin: 0 0 18px;
+}
+
+.modal-fields label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-fields input {
+  width: 64px;
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid var(--chrome-line);
+  border-radius: 5px;
+  background: var(--workspace);
+  color: inherit;
+  font: inherit;
+}
+
+.modal-fields input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -1px;
+}
+
+/* The text colour button wears the colour it will apply as a bar under its letter. */
+.toolbar button.swatch {
+  box-shadow: inset 0 -4px 0 -1px var(--swatch, currentColor);
+}
+
+/* A button with a panel of choices that opens under it. */
+.menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(6, 24px);
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--chrome-line);
+  border-radius: 8px;
+  background: var(--chrome);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.popover[hidden] {
+  display: none;
+}
+
+/* A panel of named commands, one a row. */
+.popover.list {
+  grid-template-columns: max-content;
+  gap: 2px;
+  padding: 4px;
+}
+
+.toolbar .popover.list button {
+  justify-content: flex-start;
+  width: 100%;
+  padding: 0 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* The pointer over the document while the format painter holds a format. */
+.workspaces.painting .page {
+  cursor: copy;
+}
+
+.modal-fields input::placeholder {
+  color: var(--muted);
+}
+
+.toolbar .popover button.chip {
+  min-width: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--chrome-line);
+  border-radius: 4px;
+  background: var(--chip);
+}
+
+.toolbar .popover button.chip:hover {
+  background: var(--chip);
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.toolbar .popover button.wide {
+  grid-column: 1 / -1;
+  height: 24px;
+  border-color: var(--chrome-line);
+}
+
+.find-bar {
+  position: relative;
+  z-index: 6;
+  flex: none;
+  padding: 6px 10px;
+  background: var(--chrome);
+  border-bottom: 1px solid var(--chrome-line);
+}
+
+.find-bar[hidden] {
+  display: none;
+}
+
+.find-bar input {
+  width: 180px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--chrome-line);
+  border-radius: 5px;
+  background: var(--workspace);
+  color: inherit;
+  font: inherit;
+}
+
+.find-bar output {
+  min-width: 76px;
+}
+
+.status #count {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.status #message {
+  flex: 1;
+  text-align: right;
+}

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="color-scheme" content="dark" />
+    <title>desk</title>
+    <style>
+      html, body { height: 100%; margin: 0 }
+      body { display: flex; flex-direction: column; justify-content: flex-end; font: 14px/1.4 system-ui, sans-serif; color: #f4f2fa; background: linear-gradient(160deg, #2b2440, #12101a) }
+      nav { display: flex; gap: 8px; margin: 0 auto 16px; padding: 8px; border-radius: 16px; background: #ffffff1f }
+      button { padding: 8px 14px; border: 0; border-radius: 10px; color: inherit; background: #ffffff14; font: inherit; cursor: pointer }
+      button:hover { background: #ffffff33 }
+    </style>
+  </head>
+  <body>
+    <nav id="dock"></nav>
+    <script type="module" src="./src/desktop.js"></script>
+  </body>
+</html>

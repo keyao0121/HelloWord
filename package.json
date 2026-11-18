@@ -1,0 +1,20 @@
+{
+  "name": "word",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "acde:dev": "acde dev",
+    "acde:build": "acde build",
+    "acde:check": "acde check"
+  },
+  "devDependencies": {
+    "typescript": "~7.0.2",
+    "vite": "^8.3.6",
+    "@dopame/acde-api": "https://calbin-1318886512.cos.ap-beijing.myqcloud.com/pkgs/acdert/0.0.9/acde-api-0.0.9.tar.gz"
+  },
+  "packageManager": "bun@1.4.4"
+}

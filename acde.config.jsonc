@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/@dopame/acde-api/config.schema.json",
+  // A window app: a Vanilla project; acde build uses its own build. System features come from
+  // acde:* modules (import { fs } from 'acde:fs'), granted by capabilities. For editor types write
+  // /// <reference types="@dopame/acde-api/app" /> (the app modules; shell modules are only for desktops and their own apps).
+  "type": "app",
+  "id": "word",
+  "label": "Word",
+  // The window opens wide enough for the toolbar on one row and an A4 page at 100%.
+  "size": [1120, 780],
+  // .docx files: a double-click in the file manager reaches the app as an open-file request.
+  "mimeTypes": ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
+  // The wasm engine and its fonts take about 25 MB before any document is open.
+  "heapMb": 512,
+  // icon: an icon name (app, timer, chart … see @dopame/acde-api) or an .svg / .png in the project (like "icon.svg"),
+  // copied into the package at build time.
+  "icon": "office",
+  // capabilities: the system features the app uses. "fs": true gives the app's private folder and the folders the user
+  // picks for it; name public places in fs.roots, and declaring one is what gives the app access to it:
+  // "fs": { "roots": ["documents"] }
+  // (desktop, documents, downloads, music, pictures, videos).
+  "capabilities": {},
+  // optional: capabilities the app can run without; they are not imported statically but taken with
+  // load('<name>') from @dopame/acde-api.
+  "optional": [],
+  // services: desktop services the app uses (import 'acde:<name>'); not the name of a system module.
+  "services": [],
+  // requests: the private requests the app accepts (another app calls open('word', { kind: '<name>' }));
+  // schemes: the URL schemes whose links it opens (lower case, without the colon).
+  "requests": ["new-document", "insert-text", "replace-text", "save-document", "export-pdf"],
+  "schemes": []
+}
